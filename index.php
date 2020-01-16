@@ -6,7 +6,7 @@
     <link href="game-sheet.css" rel="stylesheet">
 </head>
 <body onload="start_game()">
-    <div class="box">
+    <div id="game_set" class="box">
         <div id="char_position" class="character">
             <div id="char_rotate">
                 <div class="char-tri"></div>
@@ -33,6 +33,13 @@
             <p id="speed"></p>
             <p id="directionX"></p>
             <p id="directionY"></p>
+        </div>
+        <div>
+            <h2>Settings</h2>
+            <a onclick="asteroid()" href="#">Spawn Asteroid</a>
+        </div>
+        <div>
+            <p id="score">Score: 0</p>
         </div>
     </div>
 

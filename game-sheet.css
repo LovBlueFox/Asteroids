@@ -32,7 +32,6 @@ margin-right: 25px;
 }
 #char_rotate {
     transform: rotate(0deg);
-    transition: all 0.1s ease-in-out;
     max-width: 16px;
     max-height: 49px;
 }
@@ -59,4 +58,35 @@ margin-right: 25px;
     margin-top: -8px;
     z-index: 3;
     position:relative;
+}
+.asteroid {
+    position: absolute;
+    transform: translate(-1000px);
+}
+.asteroid div {
+    transform: rotate(0deg);
+    width: 100px;
+    height: 100px;
+    background: red;
+    clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+}
+.laser {
+    position: absolute;
+    transform: translate(-2000px);
+}
+.laser div {
+    transform: rotate(0deg);
+    width: 5px;
+    height: 20px;
+    background: #f9ff00;
+    box-shadow: 0 0 8px red;
+}
+.dead {
+    color: white;
+    width: 100vw;
+    text-align: center;
+    font-size: 35px;
+}
+.dead h1 {
+    font-size: 137px;
 }
