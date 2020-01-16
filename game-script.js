@@ -2,13 +2,16 @@ let deg = 0;
 let direction = -90;
 let speed = 0;
 let turnRate = 5;
-let posX = 800;
-let posY = 420;
+let box_height = document.getElementById('game_set').clientHeight;
+let box_width = document.getElementById('game_set').clientWidth;
+let posX = box_width / 2;
+let posY = box_height / 2;
 let max_speed = 20;
 let acceleration = 2;
 let declaration = 1;
 let heading;
 let score = 0;
+
 
 //timers
 let time_left_ship_rotate;
@@ -107,15 +110,15 @@ function updatePlayerMovement() {
     speed =Math.round(speed);
     posX = posX + (speed / 4) * Math.cos(direction * Math.PI / 180);
     posY = posY + (speed / 4) * Math.sin(direction * Math.PI / 180);
-    if (posX > 1620){
+    if (posX > box_width + 20){
         posX = -20
     } else if (posX < -20){
-        posX = 1620
+        posX = box_width + 20
     }
-    if (posY > 898){
+    if (posY > box_height - 2){
         posY = -47
     } else if (posY < -47){
-        posY = 898
+        posY = box_height - 2
     }
     for (let x = 0; x < asteroids + 1; x++) {
         if (checkCollision(document.getElementById('char_position'), document.getElementById('ast_large_'+x))) {
@@ -133,8 +136,8 @@ function updatePlayerMovement() {
     document.getElementById('direction').innerText = ('Direction: '+(direction % 360 + 90));
     document.getElementById('Heading').innerText = ('Heading: '+GetHeadingDiff((deg % 360), (direction % 360) + 90));
     document.getElementById('speed').innerText = ('Speed: '+speed);
-    document.getElementById('directionX').innerText = ('directionX: '+posX);
-    document.getElementById('directionY').innerText = ('directionY: '+posY);
+    document.getElementById('directionX').innerText = ('directionX: '+Math.round(posX));
+    document.getElementById('directionY').innerText = ('directionY: '+Math.round(posY));
 }
 
 let ast_deg = 0;
@@ -143,15 +146,15 @@ function updateAsteroidMovement() {
     for (let i = 0; i < asteroids + 1; i++) {
         ast_array[i].posX = ast_array[i].posX + (ast_array[i].speed) * Math.cos(ast_array[i].direction * Math.PI / 180);
         ast_array[i].posY = ast_array[i].posY + (ast_array[i].speed) * Math.sin(ast_array[i].direction * Math.PI / 180);
-        if (ast_array[i].posX > 1700){
+        if (ast_array[i].posX > box_width + 100){
             ast_array[i].posX = -99
         } else if (ast_array[i].posX < -100){
-            ast_array[i].posX = 1699
+            ast_array[i].posX = box_width + 99
         }
-        if (ast_array[i].posY > 900){
+        if (ast_array[i].posY > box_height + 100){
             ast_array[i].posY = -99
         } else if (ast_array[i].posY < -100){
-            ast_array[i].posY = 898
+            ast_array[i].posY = box_height + 88
         }
         document.getElementById('ast_large_'+i).children[0].style.transform = 'rotate('+ast_deg+"deg)";
         document.getElementById('ast_large_'+i).style.transform = 'translate('+ast_array[i].posX+'px, '+ast_array[i].posY+'px)';
