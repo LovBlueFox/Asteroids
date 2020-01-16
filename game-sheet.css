@@ -8,8 +8,9 @@ body {
     border: 1px solid white;
     width: 1400px;
     height: 700px;
+    clip-path: inset(0px);
     overflow: hidden;
-    clip-path: border-box;
+    background: black;
 }
 .box-text {
     color: white;
