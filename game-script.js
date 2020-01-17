@@ -54,7 +54,7 @@ document.onkeydown = function(e) {
                 ship_break();
             }, 25);
             break;
-        case 90: //fire
+        case 32: //fire
             if (time_shoot_ship) {
                 break;
             }
@@ -82,14 +82,14 @@ document.onkeyup = function(e) {
             clearInterval(time_stop_ship);
             time_stop_ship = null;
             break;
-        case 90: //fire
+        case 32: //fire
             clearInterval(time_shoot_ship);
             time_shoot_ship = null;
             break;
     }
 };
 function start_game() {
-    asteroid();
+    asteroid('large');
     loop();
 }
 
@@ -121,12 +121,12 @@ function updatePlayerMovement() {
         posY = box_height - 2
     }
     for (let x = 0; x < asteroids + 1; x++) {
-        if (checkCollision(document.getElementById('char_position'), document.getElementById('ast_large_'+x))) {
+        if (checkCollision(document.getElementById('char_rotate'), document.getElementById('ast_'+x))) {
             if (ast_array[x].life === 1) {
                 document.body.innerHTML = '<div class="dead">' +
                     '<h1>You Died!</h1>' +
                     '<p>Score: '+score+'</p>' +
-                    '</div>'
+                    '</div>';
 
                 throw new Error('This is not an error. This is just to abort javascript');
             }
@@ -156,26 +156,65 @@ function updateAsteroidMovement() {
         } else if (ast_array[i].posY < -100){
             ast_array[i].posY = box_height + 88
         }
-        document.getElementById('ast_large_'+i).children[0].style.transform = 'rotate('+ast_deg+"deg)";
-        document.getElementById('ast_large_'+i).style.transform = 'translate('+ast_array[i].posX+'px, '+ast_array[i].posY+'px)';
+        document.getElementById('ast_'+i).children[0].style.transform = 'rotate('+ast_deg+"deg)";
+        document.getElementById('ast_'+i).style.transform = 'translate('+ast_array[i].posX+'px, '+ast_array[i].posY+'px)';
+        document.getElementById('ast_'+i).children[0].style.height = ast_array[i].size+'px';
+        document.getElementById('ast_'+i).children[0].style.width = ast_array[i].size+'px';
     }
 }
 
 function updateLaserMovement() {
     for (let i = 0; i < lasers + 1; i++) {
         for (let x = 0; x < asteroids + 1; x++) {
-            if (checkCollision(document.getElementById('laser_'+i), document.getElementById('ast_large_'+x))) {
-                if (ast_array[x].life === 1) {
-                    ast_array[x].life = 0;
-                    ast_array[x].speed = 0;
-                    laser_array[i].life = 100;
-                    score = score + 500;
-                    document.getElementById('ast_large_'+x).children[0].style.opacity = '0';
-                    asteroid();
-                    if (roll() < 0.5) {
-                        asteroid();
+            if (checkCollision(document.getElementById('laser_'+i), document.getElementById('ast_'+x))) {
+                if (ast_array[x].type === 'large') {
+                    if (ast_array[x].life < 4) {
+                        laser_array[i].life = 100;
+                        ast_array[x].life++;
                     }
-                    document.getElementById('score').innerText = 'Score: '+score.toString();
+                    if (ast_array[x].life === 4) {
+                        ast_array[x].life = 5;
+                        ast_array[x].speed = 0;
+                        score = score + 500;
+                        document.getElementById('ast_'+x).children[0].style.opacity = '0';
+                        asteroid('large');
+                        asteroid('medium', ast_array[x].posX, ast_array[x].posY);
+                        asteroid('medium', ast_array[x].posX, ast_array[x].posY);
+                        document.getElementById('score').innerText = 'Score: '+score.toString();
+                    }
+                } else if (ast_array[x].type === 'medium') {
+                    if (ast_array[x].life < 3) {
+                        laser_array[i].life = 100;
+                        ast_array[x].life++;
+                        if (roll() < 0.10) {
+                            asteroid('large');
+                        }
+                    }
+                    if (ast_array[x].life === 3) {
+                        ast_array[x].life = 5;
+                        ast_array[x].speed = 0;
+                        score = score + 250;
+                        document.getElementById('ast_'+x).children[0].style.opacity = '0';
+                        asteroid('small', ast_array[x].posX, ast_array[x].posY);
+                        asteroid('small', ast_array[x].posX, ast_array[x].posY);
+                        asteroid('small', ast_array[x].posX, ast_array[x].posY);
+                        document.getElementById('score').innerText = 'Score: '+score.toString();
+                    }
+                } else if (ast_array[x].type === 'small') {
+                    if (ast_array[x].life < 2) {
+                        laser_array[i].life = 100;
+                        ast_array[x].life++;
+                        if (roll() < 0.25) {
+                            asteroid('large');
+                        }
+                    }
+                    if (ast_array[x].life === 2) {
+                        ast_array[x].life = 5;
+                        ast_array[x].speed = 0;
+                        score = score + 100;
+                        document.getElementById('ast_'+x).children[0].style.opacity = '0';
+                        document.getElementById('score').innerText = 'Score: '+score.toString();
+                    }
                 }
             }
         }
@@ -205,36 +244,60 @@ function checkCollision(object_elm, asteroid_elm) {
 
 let asteroids = -1;
 let ast_array = [];
-function asteroid() {
+function asteroid(type, l_ast_posX = null, l_ast_posY = null) {
     let ast_posX;
     let ast_posY;
     asteroids++;
-    if (roll()  < 0.5) {
-        if (roll() < 0.5) { //top
-            ast_posX = Math.floor(Math.random() * 1600);
-            ast_posY = -100;
-        } else { //bottom
-            ast_posX = Math.floor(Math.random() * 1600);
-            ast_posY = 900;
+    if (type === 'large') {
+        if (roll()  < 0.5) {
+            if (roll() < 0.5) { //top
+                ast_posX = Math.floor(Math.random() * 1600);
+                ast_posY = -100;
+            } else { //bottom
+                ast_posX = Math.floor(Math.random() * 1600);
+                ast_posY = 900;
+            }
+        } else {
+            if (roll() < 0.5) { //left
+                ast_posX = -100;
+                ast_posY = Math.floor(Math.random() * 800);
+            } else { //right
+                ast_posX = 1600;
+                ast_posY = Math.floor(Math.random() * 800);
+            }
         }
-    } else {
-        if (roll() < 0.5) { //left
-            ast_posX = -100;
-            ast_posY = Math.floor(Math.random() * 800);
-        } else { //right
-            ast_posX = 1600;
-            ast_posY = Math.floor(Math.random() * 800);
-        }
+        ast_array.push({
+            'type': 'large',
+            'life': 1,
+            'size': 100,
+            'speed': Math.floor(Math.random() * 2) + 1,
+            'direction': Math.floor(Math.random() * 360),
+            'posX': ast_posX,
+            'posY': ast_posY,
+        });
+    } else if (type === 'medium') {
+        ast_array.push({
+            'type': 'medium',
+            'life': 1,
+            'size': 75,
+            'speed': Math.floor(Math.random() * 3) + 1,
+            'direction': Math.floor(Math.random() * 360),
+            'posX': l_ast_posX,
+            'posY': l_ast_posY,
+        });
+    } else if (type === 'small') {
+        ast_array.push({
+            'type': 'small',
+            'life': 1,
+            'size': 50,
+            'speed': Math.floor(Math.random() * 4) + 1,
+            'direction': Math.floor(Math.random() * 360),
+            'posX': l_ast_posX,
+            'posY': l_ast_posY,
+        });
     }
-    ast_array.push({
-        'type': 'large',
-        'life': 1,
-        'speed': Math.floor(Math.random() * 5) + 1,
-        'direction': Math.floor(Math.random() * 360),
-        'posX': ast_posX,
-        'posY': ast_posY,
-    });
-    document.getElementById('game_set').innerHTML += '<div id="ast_large_'+asteroids+'" class="asteroid"><div></div></div>';
+
+    document.getElementById('game_set').innerHTML += '<div id="ast_'+asteroids+'" class="asteroid"><div></div></div>';
 }
 
 function roll() {
@@ -325,8 +388,8 @@ function ship_fire() {
             'speed': ((speed > 7) ? 20:8 ),
             'direction': (deg - 90),
             'life': 0,
-            'posX': posX,
-            'posY': posY,
+            'posX': posX + 5,
+            'posY': posY + 15,
         });
         document.getElementById('game_set').innerHTML += '<div id="laser_'+lasers+'" class="laser"><div></div></div>';
     } else {
@@ -335,10 +398,10 @@ function ship_fire() {
             lasers_rep = 0;
         }
         laser_array[lasers_rep].direction = (deg - 90);
-        laser_array[lasers_rep].speed = ((speed > 7) ? 10:8 );
+        laser_array[lasers_rep].speed = ((speed > 7) ? 20:8 );
         laser_array[lasers_rep].life = 0;
-        laser_array[lasers_rep].posX = posX;
-        laser_array[lasers_rep].posY = posY;
+        laser_array[lasers_rep].posX = posX + 5;
+        laser_array[lasers_rep].posY = posY + 15;
     }
 }
 
