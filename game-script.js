@@ -30,12 +30,12 @@ document.onkeydown = function(e) {
                 ship_rotate('left');
             }, 25);
             break;
-        case 38: //up arrow
-            if (time_aft_ship_thrust) {
+        case 65: // A
+            if (time_left_ship_rotate) {
                 break;
             }
-            time_aft_ship_thrust = setInterval(function(){
-                ship_thrust();
+            time_left_ship_rotate = setInterval(function(){
+                ship_rotate('left');
             }, 25);
             break;
         case 39: //right arrow
@@ -46,6 +46,30 @@ document.onkeydown = function(e) {
                 ship_rotate('right');
             }, 25);
             break;
+        case 68: // D
+            if (time_right_ship_rotate) {
+                break;
+            }
+            time_right_ship_rotate = setInterval(function(){
+                ship_rotate('right');
+            }, 25);
+            break;
+        case 38: //up arrow
+            if (time_aft_ship_thrust) {
+                break;
+            }
+            time_aft_ship_thrust = setInterval(function(){
+                ship_thrust();
+            }, 25);
+            break;
+        case 87: // W
+            if (time_aft_ship_thrust) {
+                break;
+            }
+            time_aft_ship_thrust = setInterval(function(){
+                ship_thrust();
+            }, 25);
+            break;
         case 40: //down arrow
             if (time_stop_ship) {
                 break;
@@ -54,7 +78,23 @@ document.onkeydown = function(e) {
                 ship_break();
             }, 25);
             break;
+        case 83: // S
+            if (time_stop_ship) {
+                break;
+            }
+            time_stop_ship = setInterval(function(){
+                ship_break();
+            }, 25);
+            break;
         case 32: //fire
+            if (time_shoot_ship) {
+                break;
+            }
+            time_shoot_ship = setInterval(function(){
+                ship_fire();
+            }, 100);
+            break;
+        case 0: //fire
             if (time_shoot_ship) {
                 break;
             }
@@ -83,6 +123,26 @@ document.onkeyup = function(e) {
             time_stop_ship = null;
             break;
         case 32: //fire
+            clearInterval(time_shoot_ship);
+            time_shoot_ship = null;
+            break;
+        case 65: // A
+            clearInterval(time_left_ship_rotate);
+            time_left_ship_rotate = null;
+            break;
+        case 68: // D
+            clearInterval(time_right_ship_rotate);
+            time_right_ship_rotate = null;
+            break;
+        case 87: // W
+            clearInterval(time_aft_ship_thrust);
+            time_aft_ship_thrust = null;
+            break;
+        case 83: // S
+            clearInterval(time_stop_ship);
+            time_stop_ship = null;
+            break;
+        case 0: //fire
             clearInterval(time_shoot_ship);
             time_shoot_ship = null;
             break;
